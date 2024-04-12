@@ -1,3 +1,15 @@
+## Changes:
+
+- Added longclipga.py -> Get 'opinion' text from model about an image
+- (Optimize cosine similarity of text embeddings for image embeddings)
+
+## To use, type: python longclipga.py --image_path "IMG_IN/catpiz.png"
++ Check the code, I left comments.
+
+![catpizza](https://github.com/zer0int/Long-CLIP/assets/132047210/f357cda2-d460-40da-8c74-e039eb78aac5)
+
+----
+
 # Long-CLIP
 This repository is the official implementation of Long-CLIP
 
