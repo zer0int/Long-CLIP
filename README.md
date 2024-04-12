@@ -9,6 +9,7 @@
 ![catpizza](https://github.com/zer0int/Long-CLIP/assets/132047210/f357cda2-d460-40da-8c74-e039eb78aac5)
 
 ----
+## Original README.md:
 
 # Long-CLIP
 This repository is the official implementation of Long-CLIP
