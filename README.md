@@ -5,6 +5,7 @@
 
 ## To use, type: python longclipga.py --image_path "IMG_IN/catpiz.png"
 + Check the code, I left comments.
++ Original CLIP Gradient Ascent Script: Used with permission by Twitter / X: [@advadnoun](https://twitter.com/advadnoun)
 
 ![catpizza](https://github.com/zer0int/Long-CLIP/assets/132047210/f357cda2-d460-40da-8c74-e039eb78aac5)
 
