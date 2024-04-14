@@ -9,6 +9,12 @@
 
 ![catpizza](https://github.com/zer0int/Long-CLIP/assets/132047210/f357cda2-d460-40da-8c74-e039eb78aac5)
 
+## Changes:
+
+- Added longclip-token-to-ID.py -> Get token <-> ID mapping
+
+![mathematzanzigithub](https://github.com/zer0int/Long-CLIP/assets/132047210/ab8aebd4-ecfd-4303-8cbd-d93d8d43d69b)
+
 ----
 ## Original README.md:
 
