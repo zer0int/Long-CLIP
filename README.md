@@ -1,5 +1,14 @@
 ## Changes:
 
+![longclip-features](https://github.com/zer0int/Long-CLIP/assets/132047210/af1e786f-1904-4653-b0ad-b470339f7c6a)
+
+
+Added run_visualization.py / 'vitvis' for LongCLIP feature activation max visualization
+- Check run_visualization.py code # comments for instructions
+- Based on [hamidkazemi22/vit-visualization](https://github.com/hamidkazemi22/vit-visualization)
+
+## Changes:
+
 - Added longclipga.py -> Get 'opinion' text from model about an image
 - (Optimize cosine similarity of text embeddings for image embeddings)
 
