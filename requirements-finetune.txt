@@ -1,0 +1,10 @@
+adabelief-pytorch
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+torchvision
+Pillow
+scikit-learn
+matplotlib
+colorama
+tqdm
+numpy
+seaborn
