@@ -1,4 +1,4 @@
-# Changes: Added fine-tuning code for Long-CLIP! ⚠️
+# Changes: 🥳 Added fine-tuning code for Long-CLIP! 🤩
 
 ## Optimized for *I have 1 NVIDIA GPU with 24 GB VRAM available...* 😅
 
