@@ -1,3 +1,26 @@
+## Changes: Added new Long-CLIP GA AMP scripts:
+
++ Refactored GA = Gradient Ascent, gets a CLIP "opinion" (text) about an image
++ (optimizes for cosine similarity of text embeddings with image embeddings)
++ Long-CLIP ViT-L/14 (the model guiding stable diffusion) now fits in <24 GB memory!
++ Approx. 1.5 minutes / image (RTX 4090) / uses torch.cuda.amp / autocast + GradScaler
+
++ To use: python longclipga_AMP.py --image_path "IMG_IN/catpiz.png"
++ Likewise, longclipga_AMP_anti.py gets the cosine "DIS-similarity" ("opposite of") an image
+
++ There is no antonym to "cat" in real life - but in CLIP's embeddings, there is!
++ Use run_longclipga_AMP_opposites.py for both (batch) -> "What's most ALIKE to the image?" + "What's most UNLIKE the image?"
++ Saves output (all + best words) to "TOK" folder / txt files. -- Pro Tip: Use "best" to prompt SDXL. =)
+
++ ⚠️ Highly recommended: Use "Sysmem Fallback" (NVIDIA Control Panel). It *should* fit in <24 GB VRAM - BUT that depends on what else is running on your box. Plus, you wouldn't want a CUDA OOM crash just because you opened your browser to a video. You can also lower the batch_size in the code, but that degrades CLIP's "opinion" quality (but try e.g. "8" if you absolutely must).
++ ![use-nv-cp](https://github.com/zer0int/Long-CLIP/assets/132047210/1258f304-13b5-4b62-8136-7d2367389964)
+
+### Example (Long-CLIP "looking at" a CLIP neuron):
+
+![banner-ga-amp](https://github.com/zer0int/Long-CLIP/assets/132047210/41e969f9-f14b-4045-bef7-7284c2fa156a)
+
+---------
+
 # Changes: 🥳 Added fine-tuning code for Long-CLIP! 🤩
 
 ## Optimized for *I have 1 NVIDIA GPU with 24 GB VRAM available...* 😅
