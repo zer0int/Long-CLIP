@@ -1,3 +1,79 @@
+## ⭐ Summary: 
+This repo is for fine-tuning Long-CLIP in the command line. It does not add custom nodes to ComfyUI; however, you can easily use your fine-tune with ComfyUI:
+- First, fine-tune with exp-ft-B-LongGmP-finetune-LongCLIP-L.py (recommended)
+- Or with ft-B-train-LongCLIP-ViT-L-14.py (likely inferior) (deprecated)
+- If you used "exp-ft-B-LongGmP", use this to convert the model: exp-ft-C-convert-Long-GmP-back-to-weight.py
+- Then, for both fine-tune scripts, use ft-C-convert-for-SDXL-comfyUI-longCLIP.py
+- Now you have a state_dict you can plug into ComfyUI for use with SD / SDXL!
+### For ComfyUI, use [SeaArtLab/ComfyUI-Long-CLIP](https://github.com/SeaArtLab/ComfyUI-Long-CLIP) custom nodes!
+----
+### Changes 29/May/24:
+- Added exp-ft-**.py and eval-*.py scripts
+
+### ⚠️ Extremely experimental Geometric Parameterization (GmP) inspired by [this paper](https://arxiv.org/abs/2305.15912v4).
+
+- Introduces sophisticated per-parameter learning needed for GmP fine-tune.
+- Introduces gradient accumulation. Check "finetune" code for details.
+- Otherwise, this mainly changes the model architecture (!) via custom Long-CLIP model code.
+---
+- ⚠️ It is normal / inevitable to get large or even 'inf' gradients in Epoch 0. But 'inf' should NOT happen in later epochs!
+- Optional: Use "exp-ft-X-visualize-theta-r-barplots.py" to visualize distribution of 'theta' and 'r' components (only works with GmP fine-tuned model).
+- Use "exp-ft-C-convert-Long-GmP-back-to-weight.py" to convert fine-tune to normal model object. Otherwise, the model won't be compatible with any third party code at all!
+- Once converted back to ".weight", you can use the full model object "as normal" and e.g. convert to state_dict with "ft-C-convert-for-SDXL-comfyUI-longCLIP.py".
+- See the code comments in the eval-*.py files for info how to use them. Check model accuracy by evaluating against a dataset.
+
+My GmP-CLIP, fine-tuned on [https://huggingface.co/datasets/SPRIGHT-T2I/spright_coco](https://huggingface.co/datasets/SPRIGHT-T2I/spright_coco)
+Initially with short (<77 tokens) labels so I can compare it to CLIP (not-long, original-CLIP).
+You can find the short labels (if you need them for whatever reason) here: [CLIP-fine-tune/tree/CLIP-vision/COCO](https://github.com/zer0int/CLIP-fine-tune/tree/CLIP-vision/COCO)
+
+### Results:
+
+![clip-loooong-wins](https://github.com/zer0int/Long-CLIP/assets/132047210/2785bfe5-b0f3-4bac-acd0-3d2f4303df5f)
+
+----
+
+## What's Geometric Parameterization / GmP, theta, r? 🤔
+
+- GmP replaces linear layer ".weight" with GeometricLinear() for c_fc and c_proj in the MLP (multi-layer perceptron):
+
+```
+"Normal" CLIP MLP (multi-layer perceptron):
+
+(mlp): Sequential(
+  |-(c_fc): Linear(in_features=1024, out_features=4096, bias=True)
+  | (gelu): QuickGELU()
+|-}-(c_proj): Linear(in_features=4096, out_features=1024, bias=True)
+| | 
+| |-- visual.transformer.resblocks.0.mlp.c_fc.weight
+| |-- visual.transformer.resblocks.0.mlp.c_fc.bias
+|
+|---- visual.transformer.resblocks.0.mlp.c_proj.weight
+|---- visual.transformer.resblocks.0.mlp.c_proj.bias
+
+
+GmP CLIP MLP:
+
+Weight decomposition into:
+- radial component 'r' as norm of pre-trained weights
+- angular component 'theta' as normalized direction
+-> preserves weight vectors' directionality and magnitude
+
+(mlp): Sequential(
+  |-(c_fc): GeometricLinear()
+  | (gelu): QuickGELU()
+|-}-(c_proj): GeometricLinear()
+| | 
+| |-- visual.transformer.resblocks.0.mlp.c_fc.r
+| |-- visual.transformer.resblocks.0.mlp.c_fc.theta
+| |-- visual.transformer.resblocks.0.mlp.c_fc.bias
+|
+|---- visual.transformer.resblocks.0.mlp.c_proj.r
+|---- visual.transformer.resblocks.0.mlp.c_proj.theta
+|---- visual.transformer.resblocks.0.mlp.c_proj.bias
+
+(Same thing for [text] transformer.resblocks)
+```
+
 ## Changes: Added new Long-CLIP GA AMP scripts:
 
 + Refactored GA = Gradient Ascent, gets a CLIP "opinion" (text) about an image
