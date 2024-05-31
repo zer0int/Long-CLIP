@@ -7,6 +7,40 @@ This repo is for fine-tuning Long-CLIP in the command line. It does not add cust
 - Now you have a state_dict you can plug into ComfyUI for use with SD / SDXL!
 ### For ComfyUI, use [SeaArtLab/ComfyUI-Long-CLIP](https://github.com/SeaArtLab/ComfyUI-Long-CLIP) custom nodes!
 ----
+### Changes 31/May/24:
+
+### ⭐ Geometric Parameterization (GmP) and fine-tuning on CoCo-40k-SPRIGHT: 
+👉 ...Eliminates typographic attack vulnerability in Long-CLIP-L ✅🤯
+
+- Add COCO-SPRIGHT dataset labels + training code for reproduction of my results
+- Exact code I used for fine-tune (10 Epochs, 3 hours or so, RTX4090); see code comments
+- Attention visualization 
+----
+- Use exp-ft-B-reproduce-LongGmP-finetune-LongCLIP-L-on-long-labels.py to reproduce my results with GmP-CoCo-SPRIGHT-40k
+- Use ft-D-Long-eval-single-image-multi-labels.py to classify single image with multi-labels, e.g. typographic attack probing
+----
+- Simply use runall-longclip-explain.py to batch processes all images in "IMG_IN"; will do:
+- Getting a Long-CLIP opinion about them / gradient ascent, longclipga_AMP-finetune.py
+- Using Long-CLIP opinion + image -> attention heatmaps / what CLIP was 'looking at': longclip-explain-attention-visualization.py
+- Note: CLIP often predicts emojis. This can lead to [unicode] errors on certain OS. If this happens, edit the files in the "TOK" folder and remove CLIP's predicted emojis and other special characters, then run "python longclip-explain-attention-visualization.py" + the below scripts one after another manually. Emojis are important predictions in CLIP for salient features (lol - but it's true!), so I didn't want to strip them by default.
+- Write CLIP opinion word into image as text, make group mosaics / runmakenames.py + runmakemosaic.py
+- --> As always, check the code for comments / details and usage info! <--
+----
+
+Results of the above fine-tuning and evaluation / visualization:
+
+![apple-ipod-demo](https://github.com/zer0int/Long-CLIP/assets/132047210/950199f6-59f2-47fb-a37b-af427e2259a2)
+
+![poodle-demo](https://github.com/zer0int/Long-CLIP/assets/132047210/da8fdef7-b0b7-4f35-b28f-d5a3b0c41eef)
+
+Limitation: Non-English typographic attack vulnerability; here: German, "*attention eavesdropping*" on an Alexa:
+Microphone, Satire: Remarkably correct. "lichmachpuck": Nonsensical token-smasher word "light-make-puck". "schtenberg" - made-up "last-name-sound-alike" because "just prepend 'sch-' and add '-berg' or '-ung' and it appears as if it was German", right?! Well; CLIP found that pattern during its pre-training, too. =)
+
+![exception-typographic-non-english](https://github.com/zer0int/Long-CLIP/assets/132047210/b267c83f-9633-45d5-8f62-36a6c2f215c7)
+
+Would likely need to train CLIP on German (and other languages) to stop that, as it seems to be a "biased rant due to minority representation in training data". Maybe I'll spam GPT-4o @ OpenAI API with 40k labels for translating. =)
+
+-----
 ### Changes 29/May/24:
 - Added exp-ft-**.py and eval-*.py scripts
 
