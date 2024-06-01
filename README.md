@@ -21,7 +21,7 @@ This repo is for fine-tuning Long-CLIP in the command line. It does not add cust
 ----
 - Simply use runall-longclip-explain.py to batch processes all images in "IMG_IN"; will do:
 - Getting a Long-CLIP opinion about them / gradient ascent, longclipga_AMP-finetune.py
-- Using Long-CLIP opinion + image -> attention heatmaps / what CLIP was 'looking at': longclip-explain-attention-visualization.py
+- Using Long-CLIP opinion + image -> attention heatmaps / what CLIP was 'looking at': longclip-explain-attention-visualization.py - adaptation of [hila-chefer/Transformer-MM-Explainability](https://github.com/hila-chefer/Transformer-MM-Explainability) for Long-CLIP
 - Note: CLIP often predicts emojis. This can lead to [unicode] errors on certain OS. If this happens, edit the files in the "TOK" folder and remove CLIP's predicted emojis and other special characters, then run "python longclip-explain-attention-visualization.py" + the below scripts one after another manually. Emojis are important predictions in CLIP for salient features (lol - but it's true!), so I didn't want to strip them by default.
 - Write CLIP opinion word into image as text, make group mosaics / runmakenames.py + runmakemosaic.py
 - --> As always, check the code for comments / details and usage info! <--
