@@ -6,6 +6,9 @@ This repo is for fine-tuning Long-CLIP in the command line. It does not add cust
 - Then, for both fine-tune scripts, use ft-C-convert-for-SDXL-comfyUI-longCLIP.py
 - Now you have a state_dict you can plug into ComfyUI for use with SD / SDXL!
 ### For ComfyUI, use [SeaArtLab/ComfyUI-Long-CLIP](https://github.com/SeaArtLab/ComfyUI-Long-CLIP) custom nodes!
+⬇️ Download my best-performing (ImageNet/ObjectNet accuracy of 0.89) GmP fine-tune here:
+- ⬇️ [https://huggingface.co/zer0int/LongCLIP-GmP-ViT-L-14](https://huggingface.co/zer0int/LongCLIP-GmP-ViT-L-14)
+- It's a state-dict; use with ComfyUI as-is, or load it as the state_dict of the original LongCLIP-L for inference, to fine-tune, etc.
 ----
 ### Changes 31/May/24:
 
