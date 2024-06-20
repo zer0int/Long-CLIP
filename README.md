@@ -10,6 +10,14 @@ This repo is for fine-tuning Long-CLIP in the command line. It does not add cust
 - ⬇️ [https://huggingface.co/zer0int/LongCLIP-GmP-ViT-L-14](https://huggingface.co/zer0int/LongCLIP-GmP-ViT-L-14)
 - It's a state-dict; use with ComfyUI as-is, or load it as the state_dict of the original LongCLIP-L for inference, to fine-tune, etc.
 ----
+### Changes 20/June/24:
+- Added exp-ft-M-Long-CLIP-L-GmP-plus-manipulate-activations.py
+- Allows scaling / manipulating activation value of specified neurons @ layers during fine-tuning
+- You can also just download the resulting model [here](https://huggingface.co/zer0int/LongCLIP-GmP-ViT-L-14).
+- Eval: Best model so far!
+
+![LongCLIP-eval-2](https://github.com/zer0int/Long-CLIP/assets/132047210/aa3d5a2c-7f33-4e3d-a573-a16e5c8d3677)
+----
 ### Changes 31/May/24:
 
 ### ⭐ Geometric Parameterization (GmP) and fine-tuning on CoCo-40k-SPRIGHT: 
