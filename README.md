@@ -6,6 +6,86 @@ This repo is for fine-tuning Long-CLIP in the command line. It does not add cust
 - Then, for both fine-tune scripts, use ft-C-convert-for-SDXL-comfyUI-longCLIP.py
 - Now you have a state_dict you can plug into ComfyUI for use with SD / SDXL!
 ### For ComfyUI, use [SeaArtLab/ComfyUI-Long-CLIP](https://github.com/SeaArtLab/ComfyUI-Long-CLIP) custom nodes!
+----
+## Changes 12/AUG/2024:
+
+- ### ✨ Added `exp-ft-M-Long-CLIP-L-GmP-smooth.py` 🥳
+- This is the same as `exp-ft-M-Long-CLIP-L-GmP-plus-manipulate-activations.py`
+- BUT it introduces label smoothing and a custom loss function for Long-CLIP (CLIP doesn't have discrete 'classes').
+- In general: Label smoothing is a regularization technique that softens the target labels by assigning a small probability to incorrect classes, rather than using hard one-hot labels. This approach prevents the model from becoming overly confident in its predictions, encouraging better generalization and reducing the risk of overfitting, especially in cases where the data might be noisy or limited in diversity.
+- Read more in the paper [When Does Label Smoothing Help? / Google Brain](https://arxiv.org/abs/1906.02629).
+----
+- Is it for me? 🤔
+- If you have a small dataset or suboptimal labels or are GPU-poor (24/48 GB VRAM), or all of that:
+- YES! This *may* improve your results quite dramatically! 🤓💡
+----
+It further improved the results for the high-quality COCO-40K-SPRIGHT dataset with short labels <77 tokens (!) by ~0.2% accuracy, trained on 1x RTX4090; it's likely to show much greater relative benefits with long labels and a small / less diverse dataset (such as your fine-tune of 'sneakers' or whatever floats your boat):
+
+![longclip-eval-gmp-smooth](https://github.com/user-attachments/assets/7356a1ba-a58c-4c55-a095-d1ab99abb8a0)
+
+- You can download this model on [my HuggingFace](https://huggingface.co/zer0int/LongCLIP-GmP-ViT-L-14) if you don't want to reproduce the fine-tune with the provided code. :-)
+
+- Technical / code summary of changes:
+
+## Normal Contrastive Loss.
+
+```
+class ContrastiveLoss(nn.Module):
+    def __init__(self, temperature=0.07):
+        super(ContrastiveLoss, self).__init__()
+        self.temperature = temperature
+        self.criterion = nn.CrossEntropyLoss()
+
+    def forward(self, logits_per_image, logits_per_text):
+        # Normalize the features to avoid overflow or underflow
+        logits_per_image = F.normalize(logits_per_image, p=2, dim=1)
+        logits_per_text = F.normalize(logits_per_text, p=2, dim=1)
+
+        # Calculate logits
+        logits = torch.matmul(logits_per_image, logits_per_text.t()) / self.temperature
+        labels = torch.arange(logits.size(0), device=logits.device)
+
+        # Calculate loss as the mean of the two cross-entropy losses
+        loss_img = self.criterion(logits, labels)
+        loss_txt = self.criterion(logits.t(), labels)
+
+        return (loss_img + loss_txt) / 2
+```
+
+## New Custom Loss.
+- Shout out to GPT-4o, my team-mate, for implementation help! 🤓🤝🤖
+
+```
+class ContrastiveLoss(nn.Module):
+    def __init__(self, temperature=0.07, smoothing=0.1):
+        super(ContrastiveLoss, self).__init__()
+        self.temperature = temperature
+        self.smoothing = smoothing
+
+    def forward(self, logits_per_image, logits_per_text):
+        # Normalize the features to avoid overflow or underflow
+        logits_per_image = F.normalize(logits_per_image, p=2, dim=1)
+        logits_per_text = F.normalize(logits_per_text, p=2, dim=1)
+
+        # Calculate logits
+        logits = torch.matmul(logits_per_image, logits_per_text.t()) / self.temperature
+        labels = torch.arange(logits.size(0), device=logits.device)
+        
+        # Apply label smoothing
+        N = logits.size(0)
+        smoothed_labels = torch.full_like(logits, self.smoothing / (N - 1))
+        smoothed_labels.scatter_(1, labels.unsqueeze(1), 1.0 - self.smoothing)
+
+        # Calculate loss manually using log-softmax and smoothed labels
+        log_probs = F.log_softmax(logits, dim=1)
+        loss_img = -(smoothed_labels * log_probs).sum(dim=1).mean()
+
+        log_probs = F.log_softmax(logits.t(), dim=1)
+        loss_txt = -(smoothed_labels * log_probs).sum(dim=1).mean()
+
+        return (loss_img + loss_txt) / 2
+```
+----
 ⬇️ Download my best-performing (ImageNet/ObjectNet accuracy of 0.89) GmP fine-tune here:
 - ⬇️ [https://huggingface.co/zer0int/LongCLIP-GmP-ViT-L-14](https://huggingface.co/zer0int/LongCLIP-GmP-ViT-L-14)
 - It's a state-dict; use with ComfyUI as-is, or load it as the state_dict of the original LongCLIP-L for inference, to fine-tune, etc.
