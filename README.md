@@ -5,7 +5,9 @@ This repo is for fine-tuning Long-CLIP in the command line. It does not add cust
 - If you used "exp-ft-B-LongGmP", use this to convert the model: exp-ft-C-convert-Long-GmP-back-to-weight.py
 - Then, for both fine-tune scripts, use ft-C-convert-for-SDXL-comfyUI-longCLIP.py
 - Now you have a state_dict you can plug into ComfyUI for use with SD / SDXL!
-### For ComfyUI, use [SeaArtLab/ComfyUI-Long-CLIP](https://github.com/SeaArtLab/ComfyUI-Long-CLIP) custom nodes!
+### For ComfyUI, use [https://github.com/zer0int/ComfyUI-Long-CLIP](https://github.com/zer0int/ComfyUI-Long-CLIP) custom nodes! 
+- *original by: SeaArtLab/ComfyUI-Long-CLIP*
+### ‼️ Don't want to fine-tune? You can download the model here: [https://huggingface.co/zer0int](https://huggingface.co/zer0int)
 ----
 ## Changes 12/AUG/2024:
 
