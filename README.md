@@ -5,9 +5,30 @@ This repo is for fine-tuning Long-CLIP in the command line. It does not add cust
 - If you used "exp-ft-B-LongGmP", use this to convert the model: exp-ft-C-convert-Long-GmP-back-to-weight.py
 - Then, for both fine-tune scripts, use ft-C-convert-for-SDXL-comfyUI-longCLIP.py
 - Now you have a state_dict you can plug into ComfyUI for use with SD / SDXL!
-### For ComfyUI, use [https://github.com/zer0int/ComfyUI-Long-CLIP](https://github.com/zer0int/ComfyUI-Long-CLIP) custom nodes! 
-- *original by: SeaArtLab/ComfyUI-Long-CLIP*
-### ‼️ Don't want to fine-tune? You can download the model here: [https://huggingface.co/zer0int](https://huggingface.co/zer0int)
+### 10/2024: ComfyUI now natively supports Long-CLIP 🥳 - just use it in a DualCLIPLoader node!
+----
+## Changes 22/OKT/2024:
+Added `a-loss-to-penalize-overfit-via-entropy.py`
+
+- A custom loss with an `entropy penalty` term that penalizes over-confidence (overfit)
+- For a diverse and general (!) dataset, the results of fine-tuning are good, but slightly worse than without entropy penalty (fine-tune on COCO-SPRIGHT):
+- (Note: This test was done using ViT-L/14 - 77 tokens, not Long-CLIP - but applies just the same)
+1. ImageNet/ObjectNet accuracy without entropy penalty: 0.845 -> 0.914
+2. ImageNet/ObjectNet accuracy with entropy penalty: 0.845 -> 0.908
+
+- Alas, I don't want to integrate this loss into the 'best' working code; whether or not it is useful depends entirely on your dataset. If you have a very narrow dataset (e.g. just sneakers), however, and you find CLIP to begin overfitting (val loss increasing) before it has converged to a good (low) loss, then this entropy penalty could be very useful. Simply replace the loss in the actual training script if you observe overfitting, and tinker with the `lambda_entropy` factor. Actual example from `log_train.txt` of `1.`:
+```
+Epoch n:
+Validation Acc: 0.9012, Validation F1: 0.8749
+Training Loss: 0.6043, Validation Loss: 1.1853
+Epoch n+1:
+Validation Acc: 0.8942, Validation F1: 0.8652 <- decrease
+Training Loss: 0.6018, Validation Loss: 1.1894 <- increase
+```
+Now, for the diverse dataset, this was *overtraining*, not *overfitting*; the model had already converged (good Acc/F1, low loss). In this case, early stopping (or saving checkpoints every epoch, then hand-selecting the best one - an earlier one, in this case) is recommended. However, I did not observe such an uptick with entropy penalty for a few epochs of overtraining (albeit the model converged at less ideal `Validation Acc: 0.8902, Validation F1: 0.8600`). So, give it a try if you see CLIP do this with your dataset (very extreme example; better to check `log_train.txt` to catch it early!):
+
+![extreme-example-sm](https://github.com/user-attachments/assets/18cb1436-084a-490d-835d-46ad8737eb1d)
+
 ----
 ## Changes 12/AUG/2024:
 
