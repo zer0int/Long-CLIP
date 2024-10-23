@@ -7,6 +7,13 @@ This repo is for fine-tuning Long-CLIP in the command line. It does not add cust
 - Now you have a state_dict you can plug into ComfyUI for use with SD / SDXL!
 ### 10/2024: ComfyUI now natively supports Long-CLIP 🥳 - just use it in a DualCLIPLoader node!
 ----
+## Changes 23/OKT/2024:
+Added folder `Convert-for-HuggingFace-Spaces-etc`
+
+- Includes the [convert_clip_original_pytorch_to_hf.py](https://github.com/huggingface/transformers/blob/main/src/transformers/models/clip/convert_clip_original_pytorch_to_hf.py) script from HuggingFace + configuration .json files (modified for Long-CLIP 248 tokens).
+- Includes optional code to add metadata `{"format": "pt"}` - use it in case you get an error about 'pt'!
+- Please check the included `how-to-use.txt` & code comments for details
+----
 ## Changes 22/OKT/2024:
 Added `a-loss-to-penalize-overfit-via-entropy.py`
 
